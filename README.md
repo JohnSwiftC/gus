@@ -10,6 +10,13 @@ A much better version of my first RAT/Reverse Shell GuShell. Built with Rust, pr
 
 Small bonus, AV is horrible at detecting Rust binaries.
 
+# Features
+
+- Drop into PowerShell, CMD, or any other shell application.
+- Maintain persistence disguised as a Windows process in the registry and AppData.
+- Appears to not function upon first run.
+- Always seeks a connection while the machine is on.
+
 # Usage
 
 Clone repo, look at main.rs and set your configuration settings, run `cargo build --release`, deploy.
