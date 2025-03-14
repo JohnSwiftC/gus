@@ -27,8 +27,11 @@ Set up your netcat listener and type the `help` command for options on your curr
 Current Commands
 
 `help` > Show help menu
+
 `shell` > Drop into a shell
+
 `exit` > When in a shell, exit the shell process
+
 `keylog` > Start a keylogger process
 
 # Warning
