@@ -1,10 +1,8 @@
 # GuS - A Windows RAT Built in Rust
 
-***VERY EARLY!!! ONLY ALLOWS FOR BASIC REVERSE SHELL DROP-IN AND RESTART PERSISTENCE***
-
 The following capabilities will be coming soon ~
 
-*File upload (can do this already with PowerShell!)
+- File upload (can do this already with PowerShell!)
 
 A much better version of my first RAT/Reverse Shell GuShell. Built with Rust, proper networking (works with netcat, no bulky listener), persistence, light-weight and easier to build and configure than ever. Stay connected, stay hidden.
 
@@ -32,7 +30,7 @@ Current Commands
 
 `exit` > When in a shell, exit the shell process
 
-`keylog` > Start a keylogger process
+`keylog` > Start a keylogger process **(WARNING)**: Do NOT run more than once per session, it WILL mess things up.
 
 # Warning
 
